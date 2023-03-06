@@ -14,13 +14,55 @@ ci sono altre shell come csh zsh
 ma tutte reagiscono allo stesso modo a certi input, lo standard è POSIX
 
 canali output:
-0 stdin
-1 stdout
-2 stderr
-+ altri canali per file che apre
+    0 stdin
+    1 stdout
+    2 stderr
+    + altri canali per file che apre
+    2>&1 ridirigi il canale 2 nel canale 1
+    > file  :crea il file se non esiste
+    comando<file    invia l'imput al comando con quello che c'è nel file
+    >> come > ma in append
+    << str   : prende tutto fino alla stringa che passo str
+    sort << EOF
+        > weq+f
+        > d
+        > aweqwer
+        > ttweer
+        > EOF
+        aweqwer
+        d
+        ttweer
+        weq+f
+    ls 1>/dev/null per buttare l'output
 
 override canali da bash:
-ls -alF > elenco
-sputa stdout nel file elenco !!!solo stdoiut, stderr rimane al programma chiamante
+    ls -alF > elenco
+    sputa stdout nel file elenco !!!solo stdoiut, stderr rimane al programma chiamante
 
-opzioni e argomenti
+BASH:
+
+    opzioni e argomenti
+
+    per passare stringhe
+
+    ls "la mia cartella con spazi"
+    ls la\ mia\ cartella\ con\ spazi
+
+    #inizia un commento in bash che non viene eseguito
+
+
+VARIABILI:
+    pippo = 5
+    echo $pippo
+    export pippo per farla vedere ai processi figli, per esempio script che chiamo con bash script.sh
+        se cambio pippo, tutti i figli in futuro vedranno pippo cambiato
+    miaval=23 bash script.sh per passare variabli solo al sottoprocesso
+    SHELL
+    PATH per vedere da dove prende i programmi
+    PWD working directory
+    PS1 per le info del terminale grafico
+    HOME cartella base dell'utente
+
+
+
+    
