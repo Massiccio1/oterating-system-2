@@ -1,0 +1,14 @@
+appunti:
+
+io comunico col il terminale
+    il terminale comunica col programma SHELL che è collegato all'os e traduce i comandi da tastiera in azioni per il cmputer
+    tty è il dispositivo orientato ai caratteri per interagire col computerv -> SHELL
+
+SHELL interattiva?
+    -si
+        quella che apro davanti a me
+    -no
+        lancio un'altra shell e delego tutto al programma che lancio assieme
+(bahs è un upgrade di shell .sh)
+ci sono altre shell come csh zsh
+ma tutte reagiscono allo stesso modo a certi input, lo standard è POSIX
