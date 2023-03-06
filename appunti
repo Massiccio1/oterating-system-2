@@ -17,3 +17,10 @@ canali output:
 0 stdin
 1 stdout
 2 stderr
++ altri canali per file che apre
+
+override canali da bash:
+ls -alF > elenco
+sputa stdout nel file elenco !!!solo stdoiut, stderr rimane al programma chiamante
+
+opzioni e argomenti
