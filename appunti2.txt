@@ -31,3 +31,10 @@ concatenazione di comandi
     cmd1 && cmd2 2 comandi solo se il primo non da errore
     cmd1 || cmd2  cmd2 parte se cmd1 ha dato errore
     cmd1 | cmd2  piping normale
+    ls | wc  redirect di stdout i ls in stdin di wc
+    ls |& wc  redirect di stdout  stderr i ls in stdin di wc
+
+subshell
+    parentesi () servono per raggruppare comandi in una subshell, genera un solo comando $? per subshell
+    con ((a=1)) assegna alla variabilie a il valore 1, solo in questo caso bash vede un numero e non un carattere
+    
