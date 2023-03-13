@@ -37,4 +37,10 @@ concatenazione di comandi
 subshell
     parentesi () servono per raggruppare comandi in una subshell, genera un solo comando $? per subshell
     con ((a=1)) assegna alla variabilie a il valore 1, solo in questo caso bash vede un numero e non un carattere
-    
+
+bash:
+    if [ $i = sette ] ; then echo sette, separo perché prende
+         i valori come input per il comando test
+    [] esegue il comando test di bash
+    [ -f elenco ] se esiste un file elenco nella cartella corrente
+    [ -d file ] se file è una cartella
