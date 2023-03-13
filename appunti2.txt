@@ -1,0 +1,33 @@
+lab 2
+
+
+variablili pt2
+    SHELL il programma di shell che uso /bin/bah
+    TERM terminale grafico che ho davanti xterm-256color
+    PATH path da dove prende gli eseguibili
+    PWD
+    $ PID del processo attule
+    ? valore di ritorno dell'ultimo programma lanciato
+
+es 
+    if grep alcune prova.txt ; then echo trovato; else echo non trovato ; fi
+
+permessi
+    rwxrwxrwx 3 triple di permessi: owner, group, all
+    110100000 stringa di permessi
+    rw-r----- la preno ome binario 640
+    per cambiare es. chmod +x file.txt
+                     chmoe 640 file.txt
+                     chgrp nuovogruppo file.txt
+    
+
+file eseguibili
+    magic cookie dati all'inizio del file che specificano cosa sia
+    #!/bin/bash  (shibang)all'inizio dello script indica come eseguirlo
+    #!/usr/bin/env python3  prende le variabili d'ambiente e prende python
+
+concatenazione di comandi   
+    cmd1;cmd2  2 comandi uno dopo l'altro
+    cmd1 && cmd2 2 comandi solo se il primo non da errore
+    cmd1 || cmd2  cmd2 parte se cmd1 ha dato errore
+    cmd1 | cmd2  piping normale
