@@ -1,0 +1,11 @@
+appunti 3
+    fatto es es1.sh
+
+args:
+    Sono disponibili variabili speciali in particolare $@, $# e $0, $1, $2, ...     
+    $* contiene tutti i paramatri in un unica stringa
+    $@ contiene un array di parametri  
+        more: https://unix.stackexchange.com/questions/129072/whats-the-difference-between-and 
+    [ $1 != ""] da errore quando su $1 arriva su una stringa vuota 
+    [ "$1" != ""] meglio
+    per a vere l'iesimo parametro di $@ ${!i} 
