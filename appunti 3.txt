@@ -16,3 +16,8 @@ gcc
     gcc -S <preProcessed.i|.ii> -o <assembly.asm|.s>
     gcc -c <assembly.asm|.s> -o <objectFile.obj|.o>
     gcc <objectFile.obj|.o> -o <executable.out>
+
+    es  gcc -c main.c #main include lib
+        gcc -c lib.c
+        gcc main.o lib.o
+
