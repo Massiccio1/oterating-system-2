@@ -8,4 +8,11 @@ args:
         more: https://unix.stackexchange.com/questions/129072/whats-the-difference-between-and 
     [ $1 != ""] da errore quando su $1 arriva su una stringa vuota 
     [ "$1" != ""] meglio
-    per a vere l'iesimo parametro di $@ ${!i} 
+    per a vere l'iesimo parametro di $@ ${!i}
+
+
+gcc
+    gcc -E <sorgente.c> -o <preProcessed.ii|.i>
+    gcc -S <preProcessed.i|.ii> -o <assembly.asm|.s>
+    gcc -c <assembly.asm|.s> -o <objectFile.obj|.o>
+    gcc <objectFile.obj|.o> -o <executable.out>
