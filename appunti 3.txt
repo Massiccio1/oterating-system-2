@@ -20,4 +20,10 @@ gcc
     es  gcc -c main.c #main include lib
         gcc -c lib.c
         gcc main.o lib.o
+    posso avere un warning se uno una funzione che non ha
+        dichiarazione, da un altro file anche se poi le trova,;
+        per risolvere basta che creao un .h e lo include
 
+make:
+    $@ nome dell'obiettivo
+    $^ lista delle dipendenze
