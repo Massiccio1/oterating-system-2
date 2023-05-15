@@ -18,10 +18,10 @@ typedef struct th_par{
 void* threadFunction(void* arg)
 {
     // Do some work in the thread
-    printf("Thread Function Executing with args: %s\n", (char*)arg);
+    printf("\nThread Function Executing with args: %s\n", (char*)arg);
     int *p;
     p = (int *) malloc (1* sizeof *p);
-    *p=20;
+    *p=55;
     printf("test return inside thread: %d\n",*p);
     printf("test return inside thread: %d\n", *(int*)(void*)p);
     pthread_exit((void*)p);
