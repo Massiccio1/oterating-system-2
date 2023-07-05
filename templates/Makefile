@@ -27,3 +27,11 @@ clean:
 	@[ ! -e $(FILE) ] && rm $(FILE)  || echo non esiste
 	@[ ! -e SignalProxy ] && rm SignalProxy || echo non esiste
 
+.PHONY: foo
+# make foo per farlo partire
+foo:
+	touch bar.txt
+	echo test >> bar.txt
+.PHONY: res
+res:
+	rm -rf *.out
