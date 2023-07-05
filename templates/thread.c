@@ -1,17 +1,41 @@
-//#include "doppio.h"
-#include <ctype.h>
-#include <errno.h>     // errno
-#include <fcntl.h>     // O_...
+#include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
-#include <signal.h>
-#include <stdio.h>     // printf, fprintf
-#include <stdlib.h>    // exit
-#include <string.h>    // strcpy
-#include <sys/msg.h>   // queue
-#include <sys/stat.h>
-#include <sys/types.h> // fqueue
+#include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+int stato = 0;
+
+typedef struct th_par{//struct per passare i parametri *void al thread
+    int fd;
+    int ch;
+    char* stringa;
+    pthread_mutex_t* mutex;
+}th_par;
+
+void* ascolto(void * arg){
+    
+    int stato=0;
+    th_par* t = (th_par*)arg;//parsing, così posso accedere all struct
+    int fd = t->fd;
+    int ch = t->ch;
+    char msg[2];
+    printf("\nsto ascoltanto %d su fd: %d ",ch,fd);
+    while(1){
+        int n_read = read(fd,&msg,2);
+        if(n_read>0){
+            printf("\ninterruttore %d ha scritto %d con %d caratteri\n",ch,atoi(msg),n_read);
+            fflush(stdout);
+            sleep(1);
+        }
+    }
+    printf("\nfine ascolto");
+    return arg;
+}
 
 int main(int argc, char**argv){
 
@@ -35,7 +59,7 @@ int main(int argc, char**argv){
         if(getpid()!=progenitor){//figlio
             //printf("creato figlio: %d\n",getpid());
             ch=i+1;
-            break;//se sei figlio, esci e non crearne altri
+            break;
         }
         child[i]=ret_f;
     }
@@ -46,10 +70,10 @@ int main(int argc, char**argv){
 
     if(ch){//figlio
         close(pipes[ch-1][0]);//chudo lettura
-        //fai qualcosa
+        interruttore(ch, pipes[ch-1][1] );
     }else{//padre
         sleep(1);
-        pthread_t thread[nchild];// n thread, 1 per figlio
+        pthread_t thread[nchild];
         int arg_th[nchild];
         th_par par[nchild];
         printf("\n-------------");
