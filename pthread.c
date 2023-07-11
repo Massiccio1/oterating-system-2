@@ -48,5 +48,7 @@ int main()
     //printf("Thread joined with return: %d ", *(int*)ret);
     printf("Thread %d joined with return: %d\n", t, *(int*)ret);
     free(ret);
+    printf("Thread %d joined with return: %d\n", t, *(int*)ret);
+
     return 0;
 }
