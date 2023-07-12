@@ -93,19 +93,19 @@ int leggi_pipe() {
 // Funzioni di gestione dei segnali
 
 // Funzione da invocare alla ricezione di SIGUSR1
-void invia_contatore(int) {
+void invia_contatore() {
     // inviare il contatore attraverso la pipe
     scrivi_pipe(contatore);
 }
 
 // funzione da invocare alla ricezione di SIGUSR2
-void ricevi_ritardo(int) {
+void ricevi_ritardo() {
     // lettura della pipe che contiene il nuovo ritardo
     ritardo = leggi_pipe();
 }
 
 // Funzione da invocare alla ricezione di SIGALRM
-void sdoppia(int) {
+void sdoppia() {
     // Sdoppia il processo
     if (!fork()) {
         // il figlio deve inviare il pid attraverso la pipe
@@ -118,7 +118,7 @@ void sdoppia(int) {
 //
 // Programma principale
 
-int main(void) {
+int main() {
     // invio del pid attraverso la pipe
     scrivi_pipe(getpid());
 

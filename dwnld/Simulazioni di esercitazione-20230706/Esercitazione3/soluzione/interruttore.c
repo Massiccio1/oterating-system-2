@@ -19,17 +19,17 @@ Funzioni per la gestione di un singolo interruttore
 // Le definiamo "static" per renderle inaccessibili al di fuori della libreria.
 
 // Stato corrente dell'interruttore
-static enum posizione_levetta stato;
+enum posizione_levetta stato;
 // Descrittore di scrittura della pipe di comunicazione con la centralina
-static int descrittore_scrittura;
+int descrittore_scrittura;
 
 // Invia lo stato dell'interruttore alla centralina attraverso la pipe
-static void invia_stato() {
+void invia_stato() {
 	write(descrittore_scrittura, &stato, sizeof(stato));
 }
 
 // Gestore dei segnali: registra il nuovo stato della levetta e, se è cambiato, lo spedisce alla centralina
-static void spostamento_levetta(int segnale) {
+void spostamento_levetta(int segnale) {
 	// Determina il nuovo stato sulla base del segnale ricevuto (SIGUSR1->ALTO, SIGUSR2->BASSO)
 	enum posizione_levetta nuovo_stato =
 		segnale == SIGUSR1 ? ALTO

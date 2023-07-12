@@ -26,18 +26,18 @@ enum stato_lampadina {
 // Le definiamo "static" per renderle inaccessibili al di fuori della libreria.
 
 // Vettore dei descrittori di lettura delle pipe
-static int *descrittori_lettura;
+int *descrittori_lettura;
 // Numero di elementi del vettore / interruttori
-static int numero_interruttori;
+int numero_interruttori;
 // Vettore con lo stato di ciascun interruttore
-static enum posizione_levetta *stato_interruttori;
+enum posizione_levetta *stato_interruttori;
 // Stato attuale della lampadina
-static enum stato_lampadina stato;
+enum stato_lampadina stato;
 // Mutex per il ricalcolo dello stato della lampadina
-static pthread_mutex_t mutex;
+pthread_mutex_t mutex;
 
 // Date le posizioni delle levette degli interruttori, determina lo stato della lampadina e stampalo
-static void determina_stato_lampadina() {
+void determina_stato_lampadina() {
 	// Accesso esclusivo per evitare che un altro thread modifichi lo stato in contemporanea
 	pthread_mutex_lock(&mutex);
 	// Conteggio del numero di interruttori con la levetta in posizione alta
@@ -58,7 +58,7 @@ static void determina_stato_lampadina() {
 }
 
 // Funzione principale del thread
-static void *gestione_messaggi(void *p) {
+void *gestione_messaggi(void *p) {
 	// Il parametro punta a un intero contenente l'indice del thread
 	int indice = *(int*)p;
 
