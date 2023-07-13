@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Corso di Sistemi Operativi per ICE, A.A. 2022-2023 - Esame di laboratorio del 16 giugno 2023
+        </title>
+        <style>
+            body {
+                margin-left: 20%;
+                margin-right: 20%;
+                margin-bottom: 3em;
+            }
+            tt, pre {
+                background-color: #ffffc0;
+            }
+            h3 {
+                background-color: #e0e0e0;
+            }
+            .studente1 {
+                position: fixed;
+                top: 0px;
+                right: 0px;
+                font-size: 150%;
+            }
+            .studente2 {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                font-size: 150%;
+            }
+            .studente3 {
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                font-size: 150%;
+            }
+            .studente4 {
+                position: fixed;
+                bottom: 0px;
+                left: 0px;
+                font-size: 150%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Corso di Sistemi Operativi per ICE, A.A. 2022-2023</h1>
+        <h2>Esame di laboratorio del 16 giugno 2023</h2>
+        [<a href="#regole">Regole</a>]
+        [<a href="#specifiche">Specifiche</a>]
+        [<a href="#indicazioni">Indicazioni utili</a>]
+        [<a href="#benchmark">Benchmark</a>]
+        [<a href="#soluzione">Soluzione</a>]
+
+        <hr/>
+        <h3 id="regole">Regole</h3>
+
+        <ul>
+            <li>
+                L'esercitazione dura tre ore. Non è consentito uscire dall'aula nelle prime due ore.
+            </li>
+            <li>
+                È obbligatorio l'uso del PC di laboratorio, non sono ammessi altri dispositivi.<br/>
+                Non è permessa alcuna forma di comunicazione con l'esterno o con gli altri studenti; è ovviamente vietato il ricorso a strumenti automatici come GitHub CoPilot, ChatGPT et al.
+            </li>
+            <li>
+                È permesso l'uso di
+                <ul>
+                    <li>appunti personali cartacei,</li>
+                    <li>lucidi e dispense del corso,</li>
+                    <li>una chiavetta USB contenente documentazione personale,</li>
+                    <li>pagine di manuale Unix.</li>
+                </ul>
+            </li>
+            <li>
+                La prova è divisa in quattro passi; lo svolgimento corretto dei primi due garantisce un buon punteggio; l'ultimo passo è utile per la lode.
+            </li>
+            <li>
+                Nella sezione <a href="#benchmark">Benchmark</a> di questa pagina sono disponibili le implementazioni di riferimento degli esercizi, con le quali è possibile verificare il risultato atteso.
+            </li>
+        </ul>
+
+        <hr/>
+        <h3 id="specifiche">Specifiche</h3>
+        <p>
+            L'obiettivo dell'esercitazione è la realizzazione di un sistema in cui vari processi &ldquo;giocatori&rdquo; acquisiscono punteggi in un gioco casuale e li comunicano a un processo principale che mantiene i totali e li visualizza a intervalli regolari.
+        </p>
+        <h4>Passo 1 (10 punti) &mdash; la funzione <tt>giocatore()</tt></h4>
+        <p>
+            Scrivere una funzione <tt>giocatore()</tt> che esegue in un loop infinito, senza istruzioni di ritardo, le seguenti operazioni:
+            <ul>
+                <li>
+                    legge da <tt>/dev/random</tt> il valore di una variabile <tt>unsigned int valore_intero</tt>, ovviamente come immagine binaria.
+                </li>
+                <li>
+                    Se <tt>valore_intero</tt> è inferiore a 10000 (diecimila):
+                    <ul>
+                        <li>
+                            calcola il valore <tt>float punteggio</tt> come reciproco del valore intero letto più uno: <tt>1.0 / (valore_intero+1)</tt>;
+                        </li>
+                        <li>
+                            stampa una riga sullo standard error composta dal PID del processo, due punti, uno spazio e il valore di <tt>punteggio</tt> appena calcolato;
+                        </li>
+                        <li>
+                            stampa sullo standard output una riga contenente il valore di <tt>punteggio</tt> appena calcolato.
+                        </li>
+                    </ul>
+                    Altrimenti non fa nulla.
+                </li>
+            </ul>
+        </p>
+        <p>
+            Scrivere una funzione <tt>main()</tt> per testare la funzione appena creata. L'output dovrebbe essere simile al seguente, con le righe stampate a intervalli irregolari (la prima sullo standard error, la seconda sullo standard output):
+            <pre>
+                10108: 0.000109
+                0.000109
+                10108: 0.000197
+                0.000197
+                10108: 0.000115
+                0.000115
+                10108: 0.000114
+                0.000114
+                ...
+            </pre>
+        </p>
+        <p>
+            È preferibile strutturare il codice come una libreria contenente la sola funzione <tt>giocatore()</tt> (con file sorgente <tt>giocatore.c</tt> e file header <tt>giocatore.h</tt>) e il programma principale <tt>passo1.c</tt> contenente la sola funzione <tt>main()</tt>, da compilare nell'eseguibile <tt>passo1</tt>.
+        </p>
+        <p>
+            È altresì preferibile che la compilazione sia guidata da un <tt>Makefile</tt>.
+        </p>
+
+        <h4>Passo 2 (15 punti) &mdash; Il controllore di gioco</h4>
+        <p>
+            Realizzare un programma che, utilizzando la libreria <tt>giocatore.c</tt> creata nel passo precedente, lanci 10 processi figlio ciascuno dei quali esegue la funzione <tt>giocatore()</tt> comunicando al genitore i punteggi conseguiti. Nello specifico, per dieci iterazioni:
+            <ul>
+                <li>prima della creazione del processo figlio, il genitore dovrà creare una pipe anonima;</li>
+                <li>dopo la creazione del processo figlio, il genitore dovrà avviare un thread (descritto in seguito) in ascolto sul lato in lettura della pipe;</li>
+                <li>il figlio dovrà ridirigere il proprio standard output sul lato in scrittura della pipe</li>
+                <li>infine, il figlio dovrà chiamare la funzione <tt>giocatore()</tt>.</li>
+            </ul>
+        </p>
+        <p>
+            Ogni thread di ascolto riceverà i punteggi generati dal corrispondente processo figlio attraverso la pipe ad esso dedicata. Il processo genitore manterrà un array <tt>float punteggi_parziali[10]</tt> in cui accumulare separatamente i punteggi di ogni processo figlio, e una variabile <tt>float punteggio_totale</tt> in cui accumulare tutti i punteggi:
+        </p>
+        <p>
+            <img src="schema.svg" width="50%"/>
+        </p>
+        <p>
+            Ogni cinque secondi, il processo genitore deve stampare il punteggio conseguito da ciascun figlio, seguito dal punteggio totale.
+        </p>
+        <p>
+            Il file sorgente principale deve chiamarsi <tt>passo2.c</tt> e deve essere compilato nell'eseguibile <tt>passo2</tt>.
+        </p>
+        <p>
+            Anche in questo caso è preferibile che il programma sia strutturato in modo corretto, con variabili locali (quando possibile) e un <tt>Makefile</tt>.
+        </p>
+        <p>
+            L'output del programma potrà essere simile al seguente. Le rige indentate sono il resoconto periodico del processo genitore, le altre sono quelle stampate dai singoli giocatori sullo standard error:
+            <pre>
+                9836: 0.000000
+                9838: 0.000000
+                9840: 0.000000
+                9842: 0.000000
+                9844: 0.000000
+                9846: 0.000000
+                9848: 0.000000
+                9850: 0.000000
+                9852: 0.000000
+                9854: 0.000000
+                Totale: 0.000000
+            9850: 0.000222
+            9854: 0.000203
+            9850: 0.000487
+            9848: 0.000119
+            .
+            .
+            .
+            9844: 0.000214
+            9838: 0.002058
+            9844: 0.000121
+            9848: 0.000139
+                9836: 0.000604
+                9838: 0.004138
+                9840: 0.002912
+                9842: 0.000000
+                9844: 0.002174
+                9846: 0.001682
+                9848: 0.002140
+                9850: 0.001619
+                9852: 0.000249
+                9854: 0.002789
+                Totale: 0.018307
+            9848: 0.000454
+            9840: 0.000518
+            9854: 0.000272
+            .
+            .
+            .
+            </pre>
+        </p>
+
+        <h4>Passo 3 (5 punti) &mdash; La variante <tt>exec*()</tt></h4>
+
+        <p>
+            Creare il sorgente <tt>passo3.c</tt> come modifica del passo precedente in cui i processi giocatore consistono nell'invocazione dell'eseguibile <tt>passo1</tt> invece che nella chiamata diretta della funzione.
+        </p>
+        <p>
+            Il comportamento del programma non dovrebbe differire dal precedente.
+        </p>
+
+        <h4>Passo 4 (lode) &mdash; Terminali separati</h4>
+
+        <p>
+            Creare il sorgente <tt>passo4.c</tt> che opera come nel passo precedente, ma in cui ogni processo figlio viene lanciato nella propria finestra di terminale; il risultato dovrebbe essere simile al seguente:
+        </p>
+        <p>
+            <img src="passo4.png" style="width: 75%"/>
+        </p>
+
+        <p id="note4-mostra">
+            &gt; <a href="javascript:visualizza('note4')">Mostra alcune annotazioni sul passo 4</a>.
+        </p>
+        <div id="note4" style="display:none; background-color:#c0c0c0; padding: 1em 1em 1em 5em">
+            <p>
+                <b>Attenzione</b>: se lanciamo
+                <pre>
+                    gnome-terminal -- ./passo1
+                </pre>
+                noteremo che l'output che ci interessa appare nella finestra appena aperta, mentre lo standard output del terminale in cui abbiamo dato il comando (quindi quello del processo genitore) resta vuoto:
+            </p>
+            <p>
+                <img src="no_stdout.png" style="width: 75%"/>
+            </p>
+            <p>
+                Infatti, lo standard output del programma <tt>passo1</tt> è catturato e visualizzato dal terminale che lo contiene, e non arriva al processo sottostante: quest'ultimo infatti riceve lo standard output del nuovo terminale, e non quello del processo in esso eseguito.
+            </p>
+            <p>
+                Una possibile soluzione per far passare lo standard output del processo giocatore &ldquo;attraverso&rdquo; il terminale che lo ospita fino al processo genitore è l'uso del più primitivo emulatore <tt>xterm</tt> e della sua funzionalità di logging. Nel dettaglio:
+                <ul>
+                    <li>
+                        creare un nuovo eseguibile <tt>passo1b</tt>: come <tt>passo1</tt>, ma ridirige lo standard error su <tt>/dev/null</tt>, in modo da generare solo l'output che il processo genitore si aspetta di ricevere attarverso la pipe;
+                    </li>
+                    <li>
+                        avviare <tt>xterm</tt> con le opzioni di logging attive sul proprio standard output, e con <tt>passo1b</tt> come propria shell:
+                        <pre>
+                            xterm -l -lf - ./passo1b
+                        </pre>
+                    </li>
+                </ul>
+                In questo modo, lo standard output del processo giocatore viene riproposto nello standard output del terminale:
+            </p>
+            <p>
+                <img src="xterm-log.png" style="width: 50%"/>
+            </p>
+        </div>
+
+        <hr/>
+        <h3 id="indicazioni">Indicazioni utili</h3>
+        <p>
+            Le seguenti informazioni servono solo a facilitare la stesura del codice, ma non è obbligatorio seguirle.
+        </p>
+
+        <ul>
+            <li>
+                Comandi bash utili (manuale accessibile con <tt>man 1</tt> <i>nomecomando</i>):<br/>
+                <tt>xterm</tt>.
+            </li>
+
+            <li>
+                Chiamate di sistema utili (manuale accessibile con <tt>man 2</tt> <i>nomefunzione</i>):<br/>
+                <tt>open</tt>, <tt>read</tt>, <tt>close</tt>, <tt>pipe</tt>, <tt>dup2</tt>, <tt>fork</tt>, <tt>execl</tt>, <tt>execlp</tt>,<br/>
+                <tt>pthread_mutex_init</tt>, <tt>pthread_mutex_lock</tt>, <tt>pthread_mutex_unlock</tt>, <tt>pthread_start</tt>.
+            </li>
+
+            <li>
+                Altre funzioni utili (manuale accessibile con <tt>man 3</tt> <i>nomefunzione</i>):<br/>
+                <tt>printf</tt>, <tt>fprintf</tt>, <tt>atof</tt>, <tt>sleep</tt>.
+            </li>
+
+            <li>
+                I seguenti file header dovrebbero essere sufficienti per tutte le funzioni utilizzate nell'esercitazione:
+                <pre>
+                    #include &lt;stdio.h>
+                    #include &lt;stdlib.h>
+                    #include &lt;fcntl.h>
+                    #include &lt;unistd.h>
+                    #include &lt;pthread.h>
+                </pre>
+            </li>
+        </ul>
+
+        <hr/>
+        <h3 id="benchmark">Benchmark</h3>
+        <ul>
+            <li><a href="benchmark.zip">Eseguibili di esempio</a></li>
+        </ul>
+
+        <hr/>
+        <h3 id="soluzione">Soluzione</h3>
+        <ul>
+            <li><a href="soluzione.zip">Una possibile soluzione</a></li>
+        </ul>
+
+        <script>
+            function visualizza(id) {
+                document.getElementById(id).style.display = 'block';
+                document.getElementById(id+'-mostra').style.display = 'none';
+            }
+        </script>
+
+    </body>
+</html>

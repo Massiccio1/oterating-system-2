@@ -1,37 +1,10 @@
-# name of binary:
-BIN=coda
+all: somma
 
-# source to compile:
-SRC=main.c
+somma: somma.c
+	gcc -o somma somma.c -pthread
 
-all:
-	@g++ nfork_func.c -o sim.exe
-	@echo compilation completed
-	@./sim.exe 5
-run: sim
-	./sim 5 2
-testc: %.c
-	@echo $(FILE) 
-	@[ ! -e $(FILE) ] && echo "start" > $(FILE) || echo esiste
-	g++ $(FILE) -o SignalProxy
-	
-
-%.c:
-	@echo $(FILE) in .c
-	@[ ! -e $(FILE) ] && echo "start" > $(FILE) || echo esiste
-# - print informations
-# - check for target folder and compile inside, rising error otherwise
-# - possibly move to destination (note: if in current folder rises an error, but it's ignored) then dump content of folder
+test: somma test.sh
+	./test.sh 10
 
 clean:
-	@[ ! -e $(FILE) ] && rm $(FILE)  || echo non esiste
-	@[ ! -e SignalProxy ] && rm SignalProxy || echo non esiste
-
-.PHONY: foo
-# make foo per farlo partire
-foo:
-	touch bar.txt
-	echo test >> bar.txt
-.PHONY: res
-res:
-	rm -rf *.out
+	rm -f somma

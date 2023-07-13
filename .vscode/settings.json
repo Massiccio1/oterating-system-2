@@ -2,6 +2,7 @@
     "files.associations": {
         "fcntl.h": "c",
         "stdlib.h": "c",
-        "include": "c"
+        "include": "c",
+        "condition_variable": "c"
     }
 }
