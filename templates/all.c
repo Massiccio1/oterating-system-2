@@ -14,6 +14,8 @@
 #include <sys/types.h> // fqueue
 #include <unistd.h>
 
+#include <headrer.h>
+
 #define N_THREAD 4
 
 //typedef struct

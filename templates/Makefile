@@ -1,10 +1,19 @@
-all: somma
+all: xo1 xo2
 
-somma: somma.c
-	gcc -o somma somma.c -pthread
+xo1: xo1.c
+	gcc -o xo1 xo1.c
 
-test: somma test.sh
+xo2: xo2.c
+	gcc -o xo2 xo2.c
+
+pipe:
+	mkfifo pipe
+
+test: xo1 test.sh
 	./test.sh 10
 
 clean:
-	rm -f somma
+	rm -f *.o xo1 xo2
+
+# $@ nome dell'obiettivo
+# $^ lista delle dipendenze
