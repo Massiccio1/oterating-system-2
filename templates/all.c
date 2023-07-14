@@ -14,7 +14,7 @@
 #include <sys/types.h> // fqueue
 #include <unistd.h>
 
-#include <headrer.h>
+#include <header.h>
 
 #define N_THREAD 4
 
@@ -63,6 +63,7 @@ int main(int argc, char *argv[]){
     my_par.mutex=&mut;
 
     //open read write, dup2
+    //pipe read bloccante
     int fd[2];
     pipe(fd);
     dup2(fd[1], 2);//out in err
@@ -73,10 +74,11 @@ int main(int argc, char *argv[]){
     int l = read(random_fd, buffer, sizeof(buffer));
     // assumiamo che la stringa letta termini con un a capo, lo sostituiamo con un terminatore.
     buffer[l] = 0;
-    write(fd_null, &rand, sizeof(rand));
+    write(fd_null, &rand, sizeof(rand));//&per valori non array
 
 
     //fifo
+    //read non bloccante
     char * myfifo = "myfifo";
     mkfifo(myfifo, 0x111111);
     int fd_fifo = open(myfifo, O_WRONLY);
